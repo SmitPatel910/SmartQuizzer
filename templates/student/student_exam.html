@@ -1,0 +1,99 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+{%load static%}
+
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  margin-left:-5px;
+  margin-right:-5px;
+}
+  
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
+</head>
+<br><br>
+
+
+<h2 style="text-align:center;background:skyblue;border:1px solid blue;border-radius: 20px 20px;">Quiz List</h2>
+
+<div class="row">
+  <div class="column">
+    <table>
+    <thead>
+        <tr>
+          <th>Exam Name</th>         
+          <th>Action</th>
+          {% comment %} <th> Status </th>  {% endcomment %}
+        </tr>
+      </thead>
+    {% for t in courses %}
+      
+      <tr>
+        <td> {{t.course_name}}</td> 
+        {% ifequal  t.status  "Live"%}
+          <td><a class="btn btn-danger btn-xs" href=
+        "{% url 'take-exam' t.id  %}"><span class="glyphicon glyphicon-circle-arrow-right"></span></a></td>
+        {% else %}
+          <td></td>
+        {% endifequal %}
+      </tr>
+      
+      {% endfor %}
+    </table>
+  </div>
+   <div class="column">
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+        </tr>
+      </thead>
+      {% for i in status %}
+   
+      <tr>
+        <td> {{i}}</td> 
+      </tr>
+
+      {% endfor %}
+    </table>
+  </div>  
+</div>
+<br><br><br><br><br><br>
+{% endblock content %}
