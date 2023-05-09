@@ -1,22 +1,23 @@
+# Backend Setup #
 
-How to Run this project:
+#### Create a `virtual environment` for the project by entering the following commands: ####
+`pip3 install virtualenv`
+`virtualenv DjangoQuiz`
+`source DjangoQuiz/bin/activate`
 
-* Install all Requirements:
-	python -m pip install -r requirements.txt
+#### Install Requirements ####
+`pip install -r requirements.txt`
+
+#### Create SuprerUser ####
+`python manage.py createsuperuser`
+
+#### then run these three commands ####
+`python manage.py makemigrations`
+`python manage.py migrate`
+`python manage.py runserver`
 
 
-
-* create admin account first of all:
-	py manage.py createsuperuser
-
-
-* then run these three commands:
-	py manage.py makemigrations
-	py manage.py migrate
-	py manage.py runserver
-
-
-* paste this URL into your browser:
-	http://127.0.0.1:8000/
+#### Paste this URL into your browser: ####
+`http://127.0.0.1:8000/`
 
 
