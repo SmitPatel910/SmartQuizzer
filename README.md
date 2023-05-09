@@ -8,12 +8,9 @@
 #### Install Requirements ####
 `pip install -r requirements.txt`
 
-#### Create SuprerUser ####
-`python manage.py createsuperuser`
-
-#### then run these three commands ####
-`python manage.py makemigrations`
+#### Run Following Commands ####
 `python manage.py migrate`
+`python manage.py createsuperuser`
 `python manage.py runserver`
 
 
