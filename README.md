@@ -2,7 +2,7 @@
 How to Run this project:
 
 * Install all Requirements:
-	python -m pip install -r requirements. txt
+	python -m pip install -r requirements.txt
 
 
 
