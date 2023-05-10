@@ -1,7 +1,14 @@
 asgiref==3.2.7
+beautifulsoup4==4.12.2
+bs4==0.0.1
+DateTime==4.3
 Django==3.0.5
 django-widget-tweaks==1.4.8
-pytz==2020.1
-sqlparse==0.3.1
-DateTime==4.3
 Pillow==8.0.1
+pytz==2020.1
+pytz-deprecation-shim==0.1.0.post0
+soupsieve==2.4.1
+sqlparse==0.3.1
+tzdata==2023.3
+tzlocal==4.3
+zope.interface==6.0
