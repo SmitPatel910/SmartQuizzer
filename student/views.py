@@ -56,12 +56,18 @@ def student_exam_view(request):
     temp_time=datetime.datetime.now().time()
     status=[]
 
+    print("----------------")
     for t in courses: 
+        print(temp_date)
+        print(temp_time)
+        print(t.exam_date)
+        print(t.exam_time)
         if(temp_date>t.exam_date):
             status.append("Past")
             t.status="Past"
             t.save()
         elif(temp_date<t.exam_date):
+            print(t.exam_date)
             status.append("Upcoming")
             t.status="Upcoming"
             t.save()
@@ -80,6 +86,7 @@ def student_exam_view(request):
                     t.status = "Live"
                     t.save()
                 # print("hello")
+        print("----------------")
     count = len(status)   
     return render(request,'student/student_exam.html',{'courses':courses,'status':status,'count':count})
 

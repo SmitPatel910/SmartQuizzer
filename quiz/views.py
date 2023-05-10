@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django.db.models import Q
 from django.core.mail import send_mail
 from teacher import models as TMODEL
@@ -13,8 +13,8 @@ from student import models as SMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
-
-
+import pytz
+from tzlocal import get_localzone
 
 def home_view(request):
     if request.user.is_authenticated:
@@ -196,8 +196,40 @@ def admin_add_course_view(request):
     courseForm=forms.CourseForm()
     if request.method=='POST':
         courseForm=forms.CourseForm(request.POST, request.FILES)
-        if courseForm.is_valid():    
+        if courseForm.is_valid(): 
+            print("--------------------")
+            exam_date = courseForm.cleaned_data['exam_date']
+            dateArr = exam_date.split("-")
+            year = dateArr[0]
+            month = dateArr[1]
+            day = dateArr[2]
+
+            exam_time = courseForm.cleaned_data['exam_time']
+            timeArr = exam_time.split(":")
+            hour = timeArr[0]
+            minute = timeArr[1]
+            second = timeArr[2]
+            # Get the local timezone
+            local_tz = get_localzone()
+            local_time = datetime.datetime(year, month, day, hour, minute, second)
+
+            # Get the GMT/UTC timezone
+            gmt_tz = pytz.timezone('GMT')
+
+            # Convert the local time to GMT/UTC
+            gmt_time = local_tz.localize(local_time).astimezone(gmt_tz)
+            print("--------------------")
+            print(gmt_time.strftime('%Y-%m-%d %H:%M:%S %Z%z'))
+            print("#####################")
+            exam_end_time = courseForm.cleaned_data['exam_end_time']
+            end_timeArr = exam_end_time.split(":")
+            end_hour = end_timeArr[0]
+            end_minute = end_timeArr[1]
+            end_second = end_timeArr[2]
+
+            # print(courseForm)
             courseForm.save()
+            # print("--------------------")
         else:
             print(courseForm)
             print("form is invalid")
