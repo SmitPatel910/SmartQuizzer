@@ -16,6 +16,8 @@ from django.contrib.auth.models import User
 import pytz
 from tzlocal import get_localzone
 
+
+
 def home_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')  
@@ -192,47 +194,69 @@ def admin_course_view(request):
 
 
 @login_required(login_url='adminlogin')
+
 def admin_add_course_view(request):
     courseForm=forms.CourseForm()
+
     if request.method=='POST':
         courseForm=forms.CourseForm(request.POST, request.FILES)
         if courseForm.is_valid(): 
-            print("--------------------")
             exam_date = courseForm.cleaned_data['exam_date']
-            dateArr = exam_date.split("-")
-            year = dateArr[0]
-            month = dateArr[1]
-            day = dateArr[2]
+            exam_date_Arr = str(exam_date).split("-")
+            
+            year = exam_date_Arr[0]
+            month = exam_date_Arr[1]
+            day = exam_date_Arr[2]
 
             exam_time = courseForm.cleaned_data['exam_time']
-            timeArr = exam_time.split(":")
+            timeArr = str(exam_time).split(":")
             hour = timeArr[0]
             minute = timeArr[1]
             second = timeArr[2]
-            # Get the local timezone
-            local_tz = get_localzone()
-            local_time = datetime.datetime(year, month, day, hour, minute, second)
+            
+            local_tz = pytz.timezone('America/Denver')
+            local_time = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
+            local_time_final = datetime.strptime(str(local_time), '%Y-%m-%d %H:%M:%S').replace(tzinfo=local_tz)
 
-            # Get the GMT/UTC timezone
             gmt_tz = pytz.timezone('GMT')
+            gmt_time = local_time_final.astimezone(gmt_tz)
+            gmt_time = gmt_time.strftime('%Y-%m-%d %H:%M:%S %Z%z')
+         
+            updated_date = gmt_time.split(" ")[0]
+            updated_time = gmt_time.split(" ")[1]
 
-            # Convert the local time to GMT/UTC
-            gmt_time = local_tz.localize(local_time).astimezone(gmt_tz)
-            print("--------------------")
-            print(gmt_time.strftime('%Y-%m-%d %H:%M:%S %Z%z'))
-            print("#####################")
             exam_end_time = courseForm.cleaned_data['exam_end_time']
-            end_timeArr = exam_end_time.split(":")
+            end_timeArr = str(exam_end_time).split(":")
             end_hour = end_timeArr[0]
             end_minute = end_timeArr[1]
             end_second = end_timeArr[2]
 
-            # print(courseForm)
-            courseForm.save()
-            # print("--------------------")
+           
+            local_end_time = datetime(int(year), int(month), int(day), int(end_hour), int(end_minute), int(end_second))
+            local_end_time_final = datetime.strptime(str(local_end_time), '%Y-%m-%d %H:%M:%S').replace(tzinfo=local_tz)
+
+            
+            gmt_end_time = local_end_time_final.astimezone(gmt_tz)
+            gmt_end_time = gmt_end_time.strftime('%Y-%m-%d %H:%M:%S %Z%z')
+         
+            updated_end_time = gmt_end_time.split(" ")[1]
+
+            updated_form_data = {
+                'course_name': courseForm.cleaned_data['course_name'],
+                'question_number': courseForm.cleaned_data['question_number'],
+                'total_marks': courseForm.cleaned_data['total_marks'],
+                'exam_date': updated_date,
+                'exam_time': updated_time,
+                'exam_end_time': updated_end_time,
+                # add other fields from the old form
+            }
+            updated_courseForm = forms.CourseForm(updated_form_data, request.FILES)
+            updated_courseForm.save()
+            
         else:
             print(courseForm)
             print("form is invalid")
+
         return HttpResponseRedirect('/admin-view-course')
     return render(request,'quiz/admin_add_course.html',{'courseForm':courseForm})
 
